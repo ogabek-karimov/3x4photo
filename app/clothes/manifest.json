@@ -8,10 +8,6 @@
     {
       "id": "yarim",
       "name": "Yarim rasmiy"
-    },
-    {
-      "id": "kundalik",
-      "name": "Kundalik"
     }
   ],
   "types": [
@@ -68,6 +64,15 @@
       "category": "rasmiy",
       "name": "Jaket va oq ko'ylak",
       "palette": "suit"
+    },
+    {
+      "id": "ayol-koylak",
+      "gender": [
+        "ayol"
+      ],
+      "category": "yarim",
+      "name": "Ko'ylak",
+      "palette": "shirt"
     }
   ],
   "items": [
@@ -421,7 +426,8 @@
     {
       "id": "m-koylak-havorang",
       "types": [
-        "koylak"
+        "koylak",
+        "ayol-koylak"
       ],
       "name": "Havorang",
       "file": "m-koylak-havorang.png",

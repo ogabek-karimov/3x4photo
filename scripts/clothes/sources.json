@@ -2,8 +2,7 @@
   "credits": "Kiyim rasmlari: pngimg.com — CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)",
   "categories": [
     { "id": "rasmiy", "name": "Rasmiy" },
-    { "id": "yarim", "name": "Yarim rasmiy" },
-    { "id": "kundalik", "name": "Kundalik" }
+    { "id": "yarim", "name": "Yarim rasmiy" }
   ],
   "types": [
     { "id": "kostyum-galstuk", "gender": ["erkak"], "category": "rasmiy", "name": "Kostyum va galstuk", "palette": "suit" },
@@ -11,7 +10,8 @@
     { "id": "smoking", "gender": ["erkak"], "category": "rasmiy", "name": "Smoking, babochka", "palette": "suit" },
     { "id": "koylak-galstuk", "gender": ["erkak"], "category": "yarim", "name": "Ko'ylak va galstuk", "palette": "shirt" },
     { "id": "koylak", "gender": ["erkak"], "category": "yarim", "name": "Ko'ylak", "palette": "shirt" },
-    { "id": "jaket-koylak", "gender": ["ayol"], "category": "rasmiy", "name": "Jaket va oq ko'ylak", "palette": "suit" }
+    { "id": "jaket-koylak", "gender": ["ayol"], "category": "rasmiy", "name": "Jaket va oq ko'ylak", "palette": "suit" },
+    { "id": "ayol-koylak", "gender": ["ayol"], "category": "yarim", "name": "Ko'ylak", "palette": "shirt" }
   ],
   "items": [
     { "id": "m-galstuk-qora", "type": ["kostyum-galstuk"], "name": "Qora, qora galstuk", "file": "suit/suit_PNG93206.png", "url": "https://pngimg.com/d/suit_PNG93206.png", "recolor": "jacket" },
@@ -30,6 +30,6 @@
     { "id": "m-koylak-galstuk-oq", "type": ["koylak-galstuk"], "name": "Oq, katakli galstuk", "file": "dress_shirt/dress_shirt_PNG8065.png", "url": "https://pngimg.com/d/dress_shirt_PNG8065.png", "recolor": "shirt" },
     { "id": "m-koylak-galstuk-kumush", "type": ["koylak-galstuk"], "name": "Oq, kumushrang galstuk", "file": "dress_shirt/dress_shirt_PNG8067.png", "url": "https://pngimg.com/d/dress_shirt_PNG8067.png", "recolor": "shirt" },
     { "id": "m-koylak-galstuk-bej", "type": ["koylak-galstuk"], "name": "Bej, to'q galstuk", "file": "dress_shirt/dress_shirt_PNG8064.png", "url": "https://pngimg.com/d/dress_shirt_PNG8064.png", "recolor": "shirt" },
-    { "id": "m-koylak-havorang", "type": ["koylak"], "name": "Havorang", "file": "dress_shirt/dress_shirt_PNG8066.png", "url": "https://pngimg.com/d/dress_shirt_PNG8066.png", "recolor": "shirt", "tie": false }
+    { "id": "m-koylak-havorang", "type": ["koylak", "ayol-koylak"], "name": "Havorang", "file": "dress_shirt/dress_shirt_PNG8066.png", "url": "https://pngimg.com/d/dress_shirt_PNG8066.png", "recolor": "shirt", "tie": false }
   ]
 }

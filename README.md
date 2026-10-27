@@ -5,7 +5,14 @@ Hujjatlar uchun 3×4 sm rasm tayyorlovchi Windows dasturi.
 - **Jins tanlash** — erkak yoki ayol; kiyimlar katalogi shunga mos ochiladi.
 - **Orqa fonni avtomatik o'chirish** — sun'iy intellekt modeli (ISNet) kompyuterning o'zida ishlaydi.
 - **Avtomatik 3×4 kadrlash** — yuz aniqlanadi, bosh to'g'rilanadi va standart nisbatda joylanadi.
-- **Kiyim almashtirish** — rasmiy / yarim rasmiy / kundalik bo'limlar, o'z PNG kiyimingizni qo'shish imkoni.
+- **Kiyim kiydirish** — Bo'lim → Tur → Variant → Rang:
+  - erkaklar: kostyum va galstuk (11 variant), galstuksiz kostyum, smoking, ko'ylak va galstuk, ko'ylak;
+  - ayollar: jaket va oq ko'ylak, ko'ylak;
+  - jaket uchun 10 ta, ko'ylak uchun 7 ta rang (galstuk o'z rangida qoladi);
+  - kiyim tanlanganda asl kiyim va yelkalar olib tashlanadi, bosh, bo'yin va soch saqlanadi;
+  - kiyim yuzga qarab avtomatik joylanadi, kerak bo'lsa kattalik/joylashuvni qo'lda moslash yoki rasm ustida
+    sichqoncha bilan surish mumkin;
+  - o'z kiyimingizni (shaffof PNG) qo'shish imkoni.
 - **Fon rangi** — oq, kulrang, havorang, ko'k, qizil yoki istalgan rang.
 - **Yuqori sifatda yuklab olish** — 600 DPI:
   - 1 dona (709×945 px, 3×4 sm)
@@ -34,21 +41,30 @@ yoki **Actions → Windows build → Run workflow** orqali.
 
 ### Kiyim shablonlari
 
-Dastur bilan keladigan kiyimlar `app/clothes/` papkasida, ro'yxati `app/clothes/manifest.json` da:
+Dastur bilan keladigan kiyimlar `app/clothes/` papkasida. Ular `scripts/clothes/process.py` skripti bilan
+`scripts/clothes/sources.json` dagi manba rasmlardan tayyorlanadi:
 
-```json
-{
-  "id": "erkak-qora-kostyum",
-  "gender": "erkak",
-  "category": "rasmiy",
-  "name": "Qora kostyum, galstuk",
-  "file": "erkak/qora-kostyum.png"
-}
+```bash
+pip install numpy pillow scipy
+python3 scripts/clothes/process.py <manba rasmlar papkasi>
 ```
 
-Har bir kiyim — shaffof fonli PNG (oldidan ko'rinish, bo'yin qismi ochiq). Yoqa nuqtasi va
-yelka kengligi avtomatik aniqlanadi; kerak bo'lsa `"anchor": {"x":..,"y":..}` va `"shoulder": ..`
-(piksellarda) qo'lda ko'rsatish mumkin.
+Skript har bir shablon uchun quyidagilarni bajaradi:
+- shaffof chetlarni kesadi va kichraytiradi;
+- yoqa markazi va bo'yin ochig'i kengligini aniqlaydi (yuzga moslab joylash uchun);
+- rang almashtirish uchun jaket yoki ko'ylak niqobini yaratadi, galstukni chiqarib tashlaydi;
+- yoqaning ichki qatlamini yaratadi;
+- `app/clothes/manifest.json` ni yozadi.
+
+Shablonga xos masshtab tuzatishi `sources.json` da `"fit": { "scale": 0.8 }` ko'rinishida beriladi.
+
+### Litsenziyalar
+
+Kiyim rasmlari [pngimg.com](https://pngimg.com) saytidan olingan va
+[CC BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) litsenziyasi ostida tarqatiladi
+(faqat notijorat maqsadda, manba ko'rsatilgan holda). Har bir rasmning manbasi `sources.json` da.
+Orqa fonni o'chirish: [@imgly/background-removal](https://github.com/imgly/background-removal-js),
+yuzni aniqlash: [@vladmandic/face-api](https://github.com/vladmandic/face-api) (MIT).
 
 ---
 
