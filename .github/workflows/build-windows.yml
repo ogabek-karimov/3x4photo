@@ -4,6 +4,11 @@ on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      release:
+        description: "Release tegi (masalan v1.0.0). Bo'sh qoldirilsa faqat exe yig'iladi."
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -31,8 +36,32 @@ jobs:
             release/*.exe
           if-no-files-found: error
 
-      - name: Release yaratish (teg bilan ishga tushganda)
-        if: startsWith(github.ref, 'refs/tags/v')
+      - name: Release yaratish
+        if: startsWith(github.ref, 'refs/tags/v') || inputs.release != ''
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.release || github.ref_name }}
+          target_commitish: ${{ github.sha }}
+          name: 3x4 Foto Studio ${{ inputs.release || github.ref_name }}
+          make_latest: true
           files: release/*.exe
+          body: |
+            ## 3x4 Foto Studio
+
+            Hujjatlar uchun 3×4 sm rasm tayyorlovchi Windows dasturi.
+
+            | Fayl | Tavsif |
+            | --- | --- |
+            | `3x4-Foto-Studio-Setup-*.exe` | O'rnatuvchi (ish stoli va Start menyusiga yorliq yaratadi) |
+            | `3x4-Foto-Studio-Portable-*.exe` | Portable — o'rnatmasdan ishlaydi |
+
+            **Imkoniyatlar**
+            - Erkak / ayol tanlash, orqa fonni avtomatik o'chirish, avtomatik 3×4 kadrlash
+            - Kiyim kiydirish: Bo'lim → Tur → Variant → Rang, asl kiyim avtomatik olib tashlanadi, qo'lda moslash
+            - Fon rangi, yorqinlik/kontrast sozlamalari
+            - 600 DPI'da yuklab olish: 1 dona yoki 4 / 6 dona 10×15 sm yoki A4 qog'ozga
+            - To'liq oflayn — rasmlar internetga yuborilmaydi
+
+            Birinchi ishga tushirishda Windows ogohlantirsa: **More info → Run anyway**.
+
+            Kiyim rasmlari: pngimg.com — CC BY-NC 4.0. Ishlab chiqaruvchi: Karimov Og'abek.
