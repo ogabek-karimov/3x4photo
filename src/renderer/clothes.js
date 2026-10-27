@@ -168,54 +168,66 @@ function hexToRgb(hex) {
 
 const renderCache = new Map();
 
-// Tanlangan variant va rang uchun tayyor kiyim rasmi (canvas yoki img)
+// Tanlangan variant va rang uchun tayyor kiyim rasmi va yoqa ichki qatlami
 export async function clothImage(item, color) {
   const key = item.id + '|' + (color || '');
   if (renderCache.has(key)) return renderCache.get(key);
-  const base = await cachedImage(item.src);
-  if (!color || !item.maskSrc) {
-    renderCache.set(key, base);
-    return base;
-  }
-  const mask = await cachedImage(item.maskSrc);
-  const w = base.naturalWidth;
-  const h = base.naturalHeight;
+  const job = (async () => {
+    const base = await cachedImage(item.src);
+    const inner = item.inner ? await cachedImage('clothes/' + item.inner) : null;
+    if (!color || !item.maskSrc) return { image: base, inner };
+    const mask = await cachedImage(item.maskSrc);
+    const part = item.mask.part;
+    return {
+      image: recolor(base, mask, color, item.mask.lref, part),
+      // ko'ylak rangi o'zgarsa, yoqa ichi ham shu rangga bo'yaladi
+      inner: inner && part === 'shirt' ? recolor(inner, null, color, item.mask.lref, part) : inner
+    };
+  })();
+  renderCache.set(key, job);
+  return job;
+}
+
+function recolor(base, mask, color, lref, part) {
+  const w = base.naturalWidth || base.width;
+  const h = base.naturalHeight || base.height;
   const canvas = document.createElement('canvas');
   canvas.width = w;
   canvas.height = h;
   const ctx = canvas.getContext('2d', { willReadFrequently: true });
-  ctx.drawImage(mask, 0, 0, w, h);
-  const m = ctx.getImageData(0, 0, w, h).data;
-  ctx.clearRect(0, 0, w, h);
+  let m = null;
+  if (mask) {
+    ctx.drawImage(mask, 0, 0, w, h);
+    m = ctx.getImageData(0, 0, w, h).data;
+    ctx.clearRect(0, 0, w, h);
+  }
   ctx.drawImage(base, 0, 0);
   const img = ctx.getImageData(0, 0, w, h);
   const d = img.data;
   const [tr, tg, tb] = hexToRgb(color);
-  const lref = item.mask.lref;
-  const jacket = item.mask.part === 'jacket';
+  const jacket = part === 'jacket';
   for (let i = 0; i < d.length; i += 4) {
-    const k = m[i] / 255; // niqob kulrang: R kanal yetarli
-    if (k === 0) continue;
+    const k = m ? m[i] / 255 : 1; // niqob kulrang: R kanal yetarli
+    if (k === 0 || d[i + 3] === 0) continue;
     const L = (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255;
     let r, g, b;
     if (jacket) {
       // qorong'i matoda: soyalarni qo'shish orqali saqlash
-      const s = (L - lref) * 255 * 1.25;
-      r = tr + s;
-      g = tg + s;
-      b = tb + s;
+      const sh = (L - lref) * 255 * 1.25;
+      r = tr + sh;
+      g = tg + sh;
+      b = tb + sh;
     } else {
       // och matoda (ko'ylak): yorug'lik nisbati bo'yicha
-      const s = Math.min(1.6, L / lref);
-      r = tr * s;
-      g = tg * s;
-      b = tb * s;
+      const sh = Math.min(1.6, L / lref);
+      r = tr * sh;
+      g = tg * sh;
+      b = tb * sh;
     }
     d[i] = d[i] * (1 - k) + Math.max(0, Math.min(255, r)) * k;
     d[i + 1] = d[i + 1] * (1 - k) + Math.max(0, Math.min(255, g)) * k;
     d[i + 2] = d[i + 2] * (1 - k) + Math.max(0, Math.min(255, b)) * k;
   }
   ctx.putImageData(img, 0, 0);
-  renderCache.set(key, canvas);
   return canvas;
 }

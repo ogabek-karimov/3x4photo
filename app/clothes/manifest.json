@@ -85,6 +85,7 @@
       },
       "neck": 154.0,
       "source": "https://pngimg.com/d/suit_PNG93206.png",
+      "inner": "m-galstuk-qora.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-qora.jacket.png",
@@ -105,30 +106,14 @@
       },
       "neck": 204.0,
       "source": "https://pngimg.com/d/suit_PNG93222.png",
+      "fit": {
+        "scale": 0.8
+      },
+      "inner": "m-galstuk-qora2.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-qora2.jacket.png",
         "lref": 0.116509810090065
-      }
-    },
-    {
-      "id": "m-galstuk-havorang",
-      "types": [
-        "kostyum-galstuk"
-      ],
-      "name": "Qora, havorang ko'ylak",
-      "file": "m-galstuk-havorang.png",
-      "thumb": "m-galstuk-havorang.thumb.png",
-      "anchor": {
-        "x": 649.0,
-        "y": 44.0
-      },
-      "neck": 128.0,
-      "source": "https://pngimg.com/d/suit_PNG93219.png",
-      "mask": {
-        "part": "jacket",
-        "file": "m-galstuk-havorang.jacket.png",
-        "lref": 0.0983380377292633
       }
     },
     {
@@ -145,6 +130,7 @@
       },
       "neck": 157.0,
       "source": "https://pngimg.com/d/suit_PNG93208.png",
+      "inner": "m-galstuk-chiziqli.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-chiziqli.jacket.png",
@@ -165,6 +151,7 @@
       },
       "neck": 182.0,
       "source": "https://pngimg.com/d/suit_PNG93211.png",
+      "inner": "m-galstuk-kumush.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-kumush.jacket.png",
@@ -185,6 +172,7 @@
       },
       "neck": 152.0,
       "source": "https://pngimg.com/d/suit_PNG93213.png",
+      "inner": "m-galstuk-nuqtali.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-nuqtali.jacket.png",
@@ -205,6 +193,7 @@
       },
       "neck": 167.0,
       "source": "https://pngimg.com/d/suit_PNG93214.png",
+      "inner": "m-galstuk-binafsha.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-binafsha.jacket.png",
@@ -225,6 +214,10 @@
       },
       "neck": 313.0,
       "source": "https://pngimg.com/d/suit_PNG93212.png",
+      "fit": {
+        "scale": 0.75
+      },
+      "inner": "m-galstuk-qizil.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-qizil.jacket.png",
@@ -245,6 +238,10 @@
       },
       "neck": 133.0,
       "source": "https://pngimg.com/d/suit_PNG93220.png",
+      "fit": {
+        "scale": 0.8
+      },
+      "inner": "m-galstuk-yolli.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-yolli.jacket.png",
@@ -265,6 +262,10 @@
       },
       "neck": 484.0,
       "source": "https://pngimg.com/d/suit_PNG8137.png",
+      "fit": {
+        "scale": 0.95
+      },
+      "inner": "m-galstuk-yashil.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-yashil.jacket.png",
@@ -284,7 +285,8 @@
         "y": 2.0
       },
       "neck": 173.0,
-      "source": "https://pngimg.com/d/suit_PNG93207.png"
+      "source": "https://pngimg.com/d/suit_PNG93207.png",
+      "inner": "m-galstuk-qorakoylak.inner.png"
     },
     {
       "id": "m-galstuk-kok",
@@ -300,6 +302,7 @@
       },
       "neck": 128.0,
       "source": "https://pngimg.com/d/suit_PNG93245.png",
+      "inner": "m-galstuk-kok.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-galstuk-kok.jacket.png",
@@ -321,6 +324,7 @@
       },
       "neck": 239.0,
       "source": "https://pngimg.com/d/suit_PNG8118.png",
+      "inner": "kostyum-oq.inner.png",
       "mask": {
         "part": "jacket",
         "file": "kostyum-oq.jacket.png",
@@ -341,6 +345,10 @@
       },
       "neck": 136.0,
       "source": "https://pngimg.com/d/suit_PNG8120.png",
+      "fit": {
+        "scale": 0.65
+      },
+      "inner": "m-smoking.inner.png",
       "mask": {
         "part": "jacket",
         "file": "m-smoking.jacket.png",
@@ -361,6 +369,7 @@
       },
       "neck": 185.0,
       "source": "https://pngimg.com/d/dress_shirt_PNG8065.png",
+      "inner": "m-koylak-galstuk-oq.inner.png",
       "mask": {
         "part": "shirt",
         "file": "m-koylak-galstuk-oq.shirt.png",
@@ -381,6 +390,7 @@
       },
       "neck": 241.0,
       "source": "https://pngimg.com/d/dress_shirt_PNG8067.png",
+      "inner": "m-koylak-galstuk-kumush.inner.png",
       "mask": {
         "part": "shirt",
         "file": "m-koylak-galstuk-kumush.shirt.png",
@@ -401,6 +411,7 @@
       },
       "neck": 166.0,
       "source": "https://pngimg.com/d/dress_shirt_PNG8064.png",
+      "inner": "m-koylak-galstuk-bej.inner.png",
       "mask": {
         "part": "shirt",
         "file": "m-koylak-galstuk-bej.shirt.png",
@@ -421,6 +432,7 @@
       },
       "neck": 185.0,
       "source": "https://pngimg.com/d/dress_shirt_PNG8066.png",
+      "inner": "m-koylak-havorang.inner.png",
       "mask": {
         "part": "shirt",
         "file": "m-koylak-havorang.shirt.png",

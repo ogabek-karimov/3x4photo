@@ -1,6 +1,7 @@
 import { loadImageBitmap, cutOut } from './segment.js';
 import { detectFace } from './face.js';
-import { measure, render, renderSheet, encode, PHOTO, PAPERS, DPI } from './compose.js';
+import { stripClothes } from './strip.js';
+import { measure, render, renderSheet, encode, imageScale, PHOTO, PAPERS, DPI } from './compose.js';
 import { loadCatalog, importCloth, deleteCloth, clothImage, PALETTES } from './clothes.js';
 
 const $ = (sel) => document.querySelector(sel);
@@ -21,6 +22,7 @@ const state = {
   adjust: { ...DEFAULT_ADJUST },
   cloth: null,
   clothAdj: { scale: 1, x: 0, y: 0 },
+  stripOwn: true,
   catalog: { categories: [], types: [], items: [] },
   category: null,
   pick: null,
@@ -105,6 +107,7 @@ function setBusy(text, frac) {
 async function processFile(file) {
   show('editor');
   state.cut = null;
+  state.stripped = null;
   draw();
   setBusy('Rasm o\'qilmoqda…', 0.05);
   try {
@@ -123,6 +126,7 @@ async function processFile(file) {
     if (mask.top < 0) throw new Error('Rasmda odam topilmadi');
     state.cut = bitmap;
     state.metrics = measure(mask, face);
+    state.stripped = stripClothes(bitmap, state.metrics);
     state.autoRotate = face && Math.abs(face.tilt) > 0.012 ? -face.tilt : 0;
     if (!face) toast('Yuz aniq topilmadi — joylashuvni qo\'lda to\'g\'rilashingiz mumkin');
     autoFit();
@@ -172,6 +176,7 @@ function syncSliders() {
   $('#c-scale').value = state.clothAdj.scale;
   $('#c-x').value = state.clothAdj.x;
   $('#c-y').value = state.clothAdj.y;
+  $('#c-scale-val').textContent = Math.round(state.clothAdj.scale * 100) + '%';
 }
 
 function autoFit() {
@@ -191,20 +196,37 @@ function setZoom(z) {
   draw();
 }
 
-// Sichqoncha bilan surish va kattalashtirish
+// Sichqoncha bilan surish va kattalashtirish: "Rasm" yoki "Kiyim" rejimi
 const wrap = $('#canvas-wrap');
+let dragMode = 'photo';
+function setDragMode(mode) {
+  dragMode = mode;
+  $$('#drag-mode button').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
+}
+$$('#drag-mode button').forEach((b) => b.addEventListener('click', () => setDragMode(b.dataset.mode)));
+const movingCloth = () => dragMode === 'cloth' && state.cloth;
+
 let drag = null;
 wrap.addEventListener('pointerdown', (e) => {
   if (!state.cut) return;
   wrap.setPointerCapture(e.pointerId);
   wrap.classList.add('dragging');
-  drag = { x: e.clientX, y: e.clientY, offX: state.offX, offY: state.offY };
+  drag = { x: e.clientX, y: e.clientY, offX: state.offX, offY: state.offY, cx: state.clothAdj.x, cy: state.clothAdj.y };
 });
 wrap.addEventListener('pointermove', (e) => {
   if (!drag) return;
   const r = wrap.getBoundingClientRect();
-  state.offX = drag.offX + (e.clientX - drag.x) / r.width;
-  state.offY = drag.offY + (e.clientY - drag.y) / r.height;
+  const dx = e.clientX - drag.x;
+  const dy = e.clientY - drag.y;
+  if (movingCloth()) {
+    // ekran pikselini yuz kengligi birligiga o'tkazamiz
+    const unit = state.metrics.fw * imageScale(r.height, state);
+    state.clothAdj.x = clamp(drag.cx + dx / unit, -0.5, 0.5);
+    state.clothAdj.y = clamp(drag.cy + dy / unit, -0.8, 0.8);
+  } else {
+    state.offX = drag.offX + dx / r.width;
+    state.offY = drag.offY + dy / r.height;
+  }
   syncSliders();
   draw();
 });
@@ -219,10 +241,30 @@ wrap.addEventListener(
   (e) => {
     if (!state.cut) return;
     e.preventDefault();
-    setZoom(state.zoom * (e.deltaY < 0 ? 1.03 : 1 / 1.03));
+    const f = e.deltaY < 0 ? 1.03 : 1 / 1.03;
+    if (movingCloth()) setClothScale(state.clothAdj.scale * f);
+    else setZoom(state.zoom * f);
   },
   { passive: false }
 );
+
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+function setClothScale(v) {
+  state.clothAdj.scale = clamp(v, 0.6, 1.6);
+  syncSliders();
+  draw();
+}
+$('#c-scale-dec').addEventListener('click', () => setClothScale(state.clothAdj.scale - 0.02));
+$('#c-scale-inc').addEventListener('click', () => setClothScale(state.clothAdj.scale + 0.02));
+$('#strip-own').addEventListener('change', (e) => {
+  state.stripOwn = e.target.checked;
+  draw();
+});
+$('#cloth-auto').addEventListener('click', () => {
+  state.clothAdj = { scale: 1, x: 0, y: 0 };
+  syncSliders();
+  draw();
+});
 
 // ---------- Tablar ----------
 $$('.tab').forEach((t) =>
@@ -245,7 +287,10 @@ bind('#a-rot', (v) => (state.rotate = (v * Math.PI) / 180));
 bind('#a-bri', (v) => (state.adjust.brightness = v));
 bind('#a-con', (v) => (state.adjust.contrast = v));
 bind('#a-sat', (v) => (state.adjust.saturation = v));
-bind('#c-scale', (v) => (state.clothAdj.scale = v));
+bind('#c-scale', (v) => {
+  state.clothAdj.scale = v;
+  $('#c-scale-val').textContent = Math.round(v * 100) + '%';
+});
 bind('#c-x', (v) => (state.clothAdj.x = v));
 bind('#c-y', (v) => (state.clothAdj.y = v));
 $('#reset-adjust').addEventListener('click', () => {
@@ -360,6 +405,8 @@ function renderCatalog() {
     }
   }
   $('#cloth-fit').classList.toggle('hidden', !state.cloth);
+  $('#drag-mode').classList.toggle('hidden', !state.cloth);
+  if (!state.cloth && dragMode === 'cloth') setDragMode('photo');
 }
 
 function typeCard(type) {
@@ -428,9 +475,9 @@ async function choose(typeId, itemId, color) {
   const item = state.catalog.items.find((i) => i.id === itemId);
   const seq = ++chooseSeq;
   try {
-    const image = await clothImage(item, color);
+    const { image, inner } = await clothImage(item, color);
     if (seq !== chooseSeq) return;
-    state.cloth = { image, anchor: item.anchor, neck: item.neck };
+    state.cloth = { image, inner, anchor: item.anchor, neck: item.neck, fit: item.fit };
   } catch (err) {
     console.error(err);
     toast('Kiyimni yuklashda xatolik', { error: true });

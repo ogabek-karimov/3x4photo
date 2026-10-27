@@ -184,6 +184,45 @@ def soft(mask, alpha, radius=1.0):
     return Image.fromarray(img)
 
 
+def inner_layer(rgb, alpha, lum, anchor):
+    """Bo'yin ochig'i ichini yoqaning ichki tomoni rangida to'ldiradi.
+
+    Dasturda bu qatlam odamning bo'yni orqasida chiziladi, shunda bo'yin bilan yoqa
+    orasida fon emas, matoning ichki qismi ko'rinadi.
+    """
+    h, w = alpha.shape
+    y0 = int(anchor['y'])
+    T = ~alpha
+    T[: y0 + 1] = False
+    lab, n = ndimage.label(T)
+    outside = set(np.unique(lab[:, 0])) | set(np.unique(lab[:, -1])) | set(np.unique(lab[-1, :]))
+    region = np.zeros_like(alpha)
+    for i in range(1, n + 1):
+        if i in outside:
+            continue
+        comp = lab == i
+        ys, xs = np.where(comp)
+        # faqat yuqori markazdagi ochiq joy (bo'yin teshigi)
+        if ys.min() <= y0 + 3 and abs(xs.mean() - anchor['x']) < w * 0.15:
+            region |= comp
+    if not region.any():
+        return None
+    ring = ndimage.binary_dilation(region, iterations=4) & alpha & ~region
+    color = np.median(rgb[ring], axis=0) if ring.any() else np.array([200, 200, 200])
+    ys = np.arange(h)[:, None]
+    top, bottom = y0, max(y0 + 1, np.where(region.any(axis=1))[0].max())
+    t = np.clip((ys - top) / (bottom - top), 0, 1)
+    shade = 0.62 + 0.28 * t  # yuqorisi (iyak soyasi) qorong'iroq
+    out = np.zeros((h, w, 4), np.uint8)
+    out[..., :3] = np.clip(color[None, None, :] * shade[..., None], 0, 255).astype(np.uint8)
+    a = ndimage.binary_dilation(region, iterations=3)
+    alpha_img = np.array(Image.fromarray((a * 255).astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.5))).astype(np.float32)
+    # tepasi yumshoq so'nadi: yoqa uchlari orasida kulrang to'rtburchak ko'rinmasin
+    ramp = np.clip((ys - top) / max(1.0, (bottom - top) * 0.35), 0, 1)
+    out[..., 3] = (alpha_img * ramp).astype(np.uint8)
+    return Image.fromarray(out)
+
+
 def process(src_dir, item):
     im = Image.open(src_dir / item['file']).convert('RGBA')
     bbox = im.getchannel('A').point(lambda v: 255 if v > 40 else 0).getbbox()
@@ -211,6 +250,12 @@ def process(src_dir, item):
         'neck': neck,
         'source': item['url'],
     }
+    if item.get('fit'):
+        entry['fit'] = item['fit']
+    inner = inner_layer(rgb, alpha, lum, anchor)
+    if inner is not None:
+        inner.save(OUT / f'{out_id}.inner.png', optimize=True)
+        entry['inner'] = f'{out_id}.inner.png'
     part = item.get('recolor')
     if part:
         thr = item.get('threshold') or otsu(lum[alpha])

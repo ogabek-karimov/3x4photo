@@ -14,7 +14,7 @@ const TOP_MARGIN = 0.07;
 // Kiyim joylash: shablondagi bo'yin ochig'i kengligi = yuz kengligi × NECK_PER_FACE,
 // yoqa tepasi iyakdan NECK_BELOW_CHIN × yuz kengligi pastda
 const NECK_PER_FACE = 0.9;
-const NECK_BELOW_CHIN = -0.02;
+const NECK_BELOW_CHIN = -0.19;
 
 // Yuz va siymo bo'yicha asosiy o'lchamlar (rasm piksellarida)
 export function measure(mask, face) {
@@ -41,6 +41,11 @@ export function measure(mask, face) {
   return { fw, cx, chinY, headTop, headH, fcY: (headTop + chinY) / 2 };
 }
 
+// Ko'rinishdagi 1 piksel nechta rasm pikseliga teng (sichqoncha bilan surish uchun)
+export function imageScale(H, s) {
+  return (HEAD_RATIO * H * s.zoom) / s.metrics.headH;
+}
+
 function buildFilter(adj) {
   return `brightness(${adj.brightness}%) contrast(${adj.contrast}%) saturate(${adj.saturation}%)`;
 }
@@ -54,7 +59,7 @@ export function render(ctx, W, H, s) {
     ctx.restore();
     return;
   }
-  const k = (HEAD_RATIO * H * s.zoom) / m.headH;
+  const k = imageScale(H, s);
   const tx = W / 2 + s.offX * W;
   const ty = TOP_MARGIN * H + s.offY * H + k * (m.fcY - m.headTop);
   ctx.translate(tx, ty);
@@ -64,17 +69,25 @@ export function render(ctx, W, H, s) {
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
 
+  const c = s.cloth;
+  let place = null;
+  if (c && c.image) {
+    // fit — shablonga xos tuzatish (kalibrlash), clothAdj — foydalanuvchi sozlamasi
+    const fit = c.fit || {};
+    const cs = (NECK_PER_FACE * m.fw * (fit.scale ?? 1) * s.clothAdj.scale) / c.neck;
+    const nx = m.cx + ((fit.dx ?? 0) + s.clothAdj.x) * m.fw;
+    const ny = m.chinY + (NECK_BELOW_CHIN + (fit.dy ?? 0) + s.clothAdj.y) * m.fw;
+    place = [nx - c.anchor.x * cs, ny - c.anchor.y * cs, c.image.width * cs, c.image.height * cs];
+    // yoqaning ichki tomoni — bo'yin orqasida turadi
+    if (c.inner) ctx.drawImage(c.inner, ...place);
+  }
+
   ctx.filter = buildFilter(s.adjust);
-  ctx.drawImage(s.cut, 0, 0);
+  // kiyim tanlangan bo'lsa — asl kiyimi olib tashlangan nusxa (bosh, bo'yin, soch)
+  ctx.drawImage(place && s.stripOwn && s.stripped ? s.stripped : s.cut, 0, 0);
   ctx.filter = 'none';
 
-  const c = s.cloth;
-  if (c && c.image) {
-    const cs = (NECK_PER_FACE * m.fw * s.clothAdj.scale) / c.neck;
-    const nx = m.cx + s.clothAdj.x * m.fw;
-    const ny = m.chinY + (NECK_BELOW_CHIN + s.clothAdj.y) * m.fw;
-    ctx.drawImage(c.image, nx - c.anchor.x * cs, ny - c.anchor.y * cs, c.image.width * cs, c.image.height * cs);
-  }
+  if (place) ctx.drawImage(c.image, ...place);
   ctx.restore();
 }
 

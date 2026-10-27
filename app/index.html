@@ -92,10 +92,14 @@
             <div class="preview-tools">
               <button class="icon-btn" id="zoom-out" title="Kichraytirish">−</button>
               <button class="icon-btn" id="zoom-in" title="Kattalashtirish">+</button>
+              <div class="seg hidden" id="drag-mode" title="Sichqoncha nimani suradi">
+                <button data-mode="photo" class="active">Rasm</button>
+                <button data-mode="cloth">Kiyim</button>
+              </div>
               <button class="btn ghost" id="auto-fit">Avto joylash</button>
               <button class="btn ghost" id="new-photo">Boshqa rasm</button>
             </div>
-            <p class="hint">Rasmni sichqoncha bilan suring, g'ildirak bilan kattalashtiring</p>
+            <p class="hint">Sichqoncha bilan suring, g'ildirak bilan kattalashtiring</p>
           </div>
         </div>
 
@@ -119,11 +123,31 @@
               <h4>Rang</h4>
               <div class="swatches small" id="cloth-colors"></div>
             </div>
-            <div class="cloth-fit hidden" id="cloth-fit">
-              <h4>Kiyimni moslash</h4>
-              <div class="field"><label>Kattalik</label><input type="range" id="c-scale" min="0.6" max="1.6" step="0.01" value="1" /></div>
-              <div class="field"><label>Yuqori / past</label><input type="range" id="c-y" min="-0.8" max="0.8" step="0.005" value="0" /></div>
-              <div class="field"><label>Chap / o'ng</label><input type="range" id="c-x" min="-0.5" max="0.5" step="0.005" value="0" /></div>
+            <div class="fit-card hidden" id="cloth-fit">
+              <h3 class="fit-title">Kiyim joylashuvi</h3>
+              <label class="check"><input type="checkbox" id="strip-own" checked /> Asl kiyimni olib tashlash</label>
+              <p class="fit-note">Kiyim yuzga qarab avtomatik kiyiladi. Mos kelmasa, rasm ustida sichqoncha bilan suring
+                (<b>Kiyim</b> rejimida), g'ildirak bilan kattalashtiring yoki quyidagi sozlagichlardan foydalaning.</p>
+              <div class="fit-row">
+                <label for="c-scale">Kattalik</label>
+                <div class="fit-ctl">
+                  <button class="mini-btn" id="c-scale-dec" title="Kichraytirish">−</button>
+                  <input type="range" id="c-scale" min="0.6" max="1.6" step="0.01" value="1" />
+                  <button class="mini-btn" id="c-scale-inc" title="Kattalashtirish">+</button>
+                </div>
+                <span class="fit-val" id="c-scale-val">100%</span>
+              </div>
+              <div class="fit-row">
+                <label for="c-x">Chapga / o'ngga</label>
+                <div class="fit-ctl"><input type="range" id="c-x" min="-0.5" max="0.5" step="0.005" value="0" /></div>
+                <span class="fit-val"></span>
+              </div>
+              <div class="fit-row">
+                <label for="c-y">Yuqoriga / pastga</label>
+                <div class="fit-ctl"><input type="range" id="c-y" min="-0.8" max="0.8" step="0.005" value="0" /></div>
+                <span class="fit-val"></span>
+              </div>
+              <button class="btn ghost" id="cloth-auto">Avtomatik joylash</button>
             </div>
             <label class="btn outline block hidden" id="cloth-import">
               <input type="file" id="cloth-input" accept="image/png" hidden />
