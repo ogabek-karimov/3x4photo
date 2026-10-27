@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' blob:; worker-src 'self' blob:; connect-src 'self' blob: data:; img-src 'self' blob: data:; style-src 'self' 'unsafe-inline'; font-src 'self' data:" />
+  <title>3x4 Foto Studio</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><span>3×4</span></div>
+      <div>
+        <div class="brand-name">3x4 Foto Studio</div>
+        <div class="brand-sub">Hujjat uchun rasm — tez va oson</div>
+      </div>
+    </div>
+    <ol class="steps" id="steps">
+      <li data-step="gender"><b>1</b> Jins</li>
+      <li data-step="upload"><b>2</b> Rasm</li>
+      <li data-step="editor"><b>3</b> Tahrirlash</li>
+    </ol>
+    <div class="privacy" title="Rasmlar internetga yuborilmaydi, barcha ishlov shu kompyuterda bajariladi">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.6 8 11 4.6-1.4 8-6 8-11V5l-8-3Zm-1 14-4-4 1.4-1.4L11 13.2l4.6-4.6L17 10l-6 6Z"/></svg>
+      Oflayn · ma'lumotlar tashqariga chiqmaydi
+    </div>
+  </header>
+
+  <main>
+    <!-- 1. Jins tanlash -->
+    <section class="screen active" id="screen-gender">
+      <div class="hero">
+        <h1>Kim uchun rasm tayyorlaymiz?</h1>
+        <p>Jinsni tanlang — kiyimlar katalogi shunga mos ravishda ochiladi.</p>
+      </div>
+      <div class="gender-cards">
+        <button class="gender-card male" data-gender="erkak">
+          <div class="gender-icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="20" r="11"/><path d="M12 58c0-12 9-20 20-20s20 8 20 20z"/><path class="accent" d="m32 38-4 6 4 14 4-14z"/></svg>
+          </div>
+          <h2>Erkak</h2>
+          <p>Kostyum, ko'ylak, galstuk va boshqa erkaklar kiyimlari</p>
+          <span class="go">Tanlash →</span>
+        </button>
+        <button class="gender-card female" data-gender="ayol">
+          <div class="gender-icon">
+            <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 7c-9 0-14 7-14 15 0 6 1 12-3 16h34c-4-4-3-10-3-16 0-8-5-15-14-15z"/><circle cx="32" cy="21" r="9" class="face"/><path d="M12 58c0-11 9-19 20-19s20 8 20 19z"/></svg>
+          </div>
+          <h2>Ayol</h2>
+          <p>Jaket, bluzka, ko'ylak va boshqa ayollar kiyimlari</p>
+          <span class="go">Tanlash →</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 2. Rasm yuklash -->
+    <section class="screen" id="screen-upload">
+      <button class="link-back" data-goto="gender">← Jinsni o'zgartirish</button>
+      <label class="dropzone" id="dropzone">
+        <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp,image/bmp" hidden />
+        <div class="dz-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 13v6H5v-6H3v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6h-2ZM11 5.8V16h2V5.8l3.6 3.6L18 8l-6-6-6 6 1.4 1.4L11 5.8Z"/></svg>
+        </div>
+        <h2>Rasmni shu yerga tashlang</h2>
+        <p>yoki</p>
+        <span class="btn primary">Kompyuterdan tanlash</span>
+        <small>JPG, PNG yoki WEBP · orqa fon avtomatik o'chiriladi</small>
+      </label>
+      <ul class="tips">
+        <li><b>Yuz to'g'ri</b> va kameraga qarab tursin</li>
+        <li><b>Yorug'lik</b> bir tekis, soyasiz bo'lsin</li>
+        <li><b>Bosh va yelkalar</b> to'liq ko'rinsin</li>
+      </ul>
+    </section>
+
+    <!-- 3. Tahrirlash -->
+    <section class="screen" id="screen-editor">
+      <div class="editor">
+        <div class="preview-col">
+          <div class="preview-card">
+            <div class="canvas-wrap" id="canvas-wrap">
+              <canvas id="preview" width="600" height="800"></canvas>
+              <div class="busy" id="busy">
+                <div class="spinner"></div>
+                <div class="busy-text" id="busy-text">Tayyorlanmoqda…</div>
+                <div class="progress"><i id="busy-bar"></i></div>
+              </div>
+              <div class="dim-label">3 × 4 sm</div>
+            </div>
+            <div class="preview-tools">
+              <button class="icon-btn" id="zoom-out" title="Kichraytirish">−</button>
+              <button class="icon-btn" id="zoom-in" title="Kattalashtirish">+</button>
+              <button class="btn ghost" id="auto-fit">Avto joylash</button>
+              <button class="btn ghost" id="new-photo">Boshqa rasm</button>
+            </div>
+            <p class="hint">Rasmni sichqoncha bilan suring, g'ildirak bilan kattalashtiring</p>
+          </div>
+        </div>
+
+        <aside class="panel">
+          <nav class="tabs" id="tabs">
+            <button class="tab active" data-tab="clothes">Kiyim</button>
+            <button class="tab" data-tab="background">Fon</button>
+            <button class="tab" data-tab="adjust">Sozlash</button>
+            <button class="tab" data-tab="export">Yuklab olish</button>
+          </nav>
+
+          <div class="tab-body active" id="tab-clothes">
+            <div class="chips" id="cloth-cats"></div>
+            <div class="cloth-grid" id="cloth-grid"></div>
+            <div class="cloth-fit" id="cloth-fit">
+              <h4>Kiyimni moslash</h4>
+              <div class="field"><label>Kattalik</label><input type="range" id="c-scale" min="0.6" max="1.6" step="0.01" value="1" /></div>
+              <div class="field"><label>Yuqori / past</label><input type="range" id="c-y" min="-0.8" max="0.8" step="0.005" value="0" /></div>
+              <div class="field"><label>Chap / o'ng</label><input type="range" id="c-x" min="-0.5" max="0.5" step="0.005" value="0" /></div>
+            </div>
+            <label class="btn outline block">
+              <input type="file" id="cloth-input" accept="image/png" hidden />
+              + O'z kiyimingizni qo'shish (shaffof PNG)
+            </label>
+          </div>
+
+          <div class="tab-body" id="tab-background">
+            <h4>Fon rangi</h4>
+            <div class="swatches" id="swatches">
+              <button data-color="#ffffff" title="Oq" class="active"></button>
+              <button data-color="#eef1f5" title="Och kulrang"></button>
+              <button data-color="#dbe8f6" title="Och havorang"></button>
+              <button data-color="#9ec5ef" title="Havorang"></button>
+              <button data-color="#2f6db3" title="Ko'k"></button>
+              <button data-color="#c8102e" title="Qizil"></button>
+              <label class="custom-color" title="Boshqa rang"><input type="color" id="custom-color" value="#ffffff" /></label>
+            </div>
+            <p class="note">Ko'pchilik hujjatlar uchun <b>oq</b> yoki <b>och havorang</b> fon tavsiya etiladi.</p>
+          </div>
+
+          <div class="tab-body" id="tab-adjust">
+            <h4>Joylashuv</h4>
+            <div class="field"><label>Kattalik</label><input type="range" id="a-zoom" min="0.6" max="1.6" step="0.01" value="1" /></div>
+            <div class="field"><label>Chap / o'ng</label><input type="range" id="a-x" min="-0.4" max="0.4" step="0.002" value="0" /></div>
+            <div class="field"><label>Yuqori / past</label><input type="range" id="a-y" min="-0.4" max="0.4" step="0.002" value="0" /></div>
+            <div class="field"><label>Burilish</label><input type="range" id="a-rot" min="-15" max="15" step="0.1" value="0" /></div>
+            <h4>Rang</h4>
+            <div class="field"><label>Yorqinlik</label><input type="range" id="a-bri" min="60" max="140" step="1" value="100" /></div>
+            <div class="field"><label>Kontrast</label><input type="range" id="a-con" min="60" max="140" step="1" value="100" /></div>
+            <div class="field"><label>To'yinganlik</label><input type="range" id="a-sat" min="0" max="160" step="1" value="100" /></div>
+            <button class="btn ghost block" id="reset-adjust">Asl holatga qaytarish</button>
+          </div>
+
+          <div class="tab-body" id="tab-export">
+            <h4>Nechta rasm?</h4>
+            <div class="count-options" id="count-options">
+              <button data-count="1" class="active"><span class="mini g1"><i></i></span>1 dona<small>alohida rasm</small></button>
+              <button data-count="4"><span class="mini g4"><i></i><i></i><i></i><i></i></span>4 dona<small>bitta qog'ozda</small></button>
+              <button data-count="6"><span class="mini g6"><i></i><i></i><i></i><i></i><i></i><i></i></span>6 dona<small>bitta qog'ozda</small></button>
+            </div>
+            <div class="field-row" id="paper-row">
+              <label>Qog'oz</label>
+              <select id="paper">
+                <option value="10x15">10×15 sm (foto qog'oz)</option>
+                <option value="a4">A4</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <label>Format</label>
+              <select id="format">
+                <option value="jpg">JPG (tavsiya)</option>
+                <option value="png">PNG</option>
+              </select>
+            </div>
+            <div class="sheet-preview"><canvas id="sheet-preview"></canvas></div>
+            <p class="note" id="export-info"></p>
+            <button class="btn primary block big" id="download">Yuklab olish</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> 3x4 Foto Studio. Barcha huquqlar himoyalangan.</span>
+    <span>Ishlab chiqaruvchi: <b>Karimov Og'abek</b></span>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script type="module" src="dist/main.js"></script>
+</body>
+</html>

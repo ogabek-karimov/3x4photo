@@ -1,0 +1,38 @@
+name: Windows build
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # "prepare" skripti modellarni app/ ichiga avtomatik yig'adi
+      - run: npm ci
+
+      - run: npm run dist
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: 3x4-Foto-Studio-windows
+          path: |
+            release/*.exe
+          if-no-files-found: error
+
+      - name: Release yaratish (teg bilan ishga tushganda)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.exe
