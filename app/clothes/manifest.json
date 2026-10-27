@@ -1,8 +1,431 @@
 {
+  "credits": "Kiyim rasmlari: pngimg.com — CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/)",
   "categories": [
-    { "id": "rasmiy", "name": "Rasmiy" },
-    { "id": "yarim", "name": "Yarim rasmiy" },
-    { "id": "kundalik", "name": "Kundalik" }
+    {
+      "id": "rasmiy",
+      "name": "Rasmiy"
+    },
+    {
+      "id": "yarim",
+      "name": "Yarim rasmiy"
+    },
+    {
+      "id": "kundalik",
+      "name": "Kundalik"
+    }
   ],
-  "items": []
+  "types": [
+    {
+      "id": "kostyum-galstuk",
+      "gender": [
+        "erkak"
+      ],
+      "category": "rasmiy",
+      "name": "Kostyum va galstuk",
+      "palette": "suit"
+    },
+    {
+      "id": "kostyum",
+      "gender": [
+        "erkak"
+      ],
+      "category": "rasmiy",
+      "name": "Kostyum, galstuksiz",
+      "palette": "suit"
+    },
+    {
+      "id": "smoking",
+      "gender": [
+        "erkak"
+      ],
+      "category": "rasmiy",
+      "name": "Smoking, babochka",
+      "palette": "suit"
+    },
+    {
+      "id": "koylak-galstuk",
+      "gender": [
+        "erkak"
+      ],
+      "category": "yarim",
+      "name": "Ko'ylak va galstuk",
+      "palette": "shirt"
+    },
+    {
+      "id": "koylak",
+      "gender": [
+        "erkak"
+      ],
+      "category": "yarim",
+      "name": "Ko'ylak",
+      "palette": "shirt"
+    },
+    {
+      "id": "jaket-koylak",
+      "gender": [
+        "ayol"
+      ],
+      "category": "rasmiy",
+      "name": "Jaket va oq ko'ylak",
+      "palette": "suit"
+    }
+  ],
+  "items": [
+    {
+      "id": "m-galstuk-qora",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "Qora, qora galstuk",
+      "file": "m-galstuk-qora.png",
+      "thumb": "m-galstuk-qora.thumb.png",
+      "anchor": {
+        "x": 306.0,
+        "y": 6.0
+      },
+      "neck": 154.0,
+      "source": "https://pngimg.com/d/suit_PNG93206.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-qora.jacket.png",
+        "lref": 0.09776705503463745
+      }
+    },
+    {
+      "id": "m-galstuk-qora2",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "Qora, klassik",
+      "file": "m-galstuk-qora2.png",
+      "thumb": "m-galstuk-qora2.thumb.png",
+      "anchor": {
+        "x": 598.0,
+        "y": 19.0
+      },
+      "neck": 204.0,
+      "source": "https://pngimg.com/d/suit_PNG93222.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-qora2.jacket.png",
+        "lref": 0.116509810090065
+      }
+    },
+    {
+      "id": "m-galstuk-havorang",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "Qora, havorang ko'ylak",
+      "file": "m-galstuk-havorang.png",
+      "thumb": "m-galstuk-havorang.thumb.png",
+      "anchor": {
+        "x": 649.0,
+        "y": 44.0
+      },
+      "neck": 128.0,
+      "source": "https://pngimg.com/d/suit_PNG93219.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-havorang.jacket.png",
+        "lref": 0.0983380377292633
+      }
+    },
+    {
+      "id": "m-galstuk-chiziqli",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "To'q ko'k, chiziqli galstuk",
+      "file": "m-galstuk-chiziqli.png",
+      "thumb": "m-galstuk-chiziqli.thumb.png",
+      "anchor": {
+        "x": 299.5,
+        "y": 10.0
+      },
+      "neck": 157.0,
+      "source": "https://pngimg.com/d/suit_PNG93208.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-chiziqli.jacket.png",
+        "lref": 0.1412031501531601
+      }
+    },
+    {
+      "id": "m-galstuk-kumush",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "To'q ko'k, kumushrang galstuk",
+      "file": "m-galstuk-kumush.png",
+      "thumb": "m-galstuk-kumush.thumb.png",
+      "anchor": {
+        "x": 301.0,
+        "y": 2.0
+      },
+      "neck": 182.0,
+      "source": "https://pngimg.com/d/suit_PNG93211.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-kumush.jacket.png",
+        "lref": 0.13277804851531982
+      }
+    },
+    {
+      "id": "m-galstuk-nuqtali",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "To'q ko'k, nuqtali galstuk",
+      "file": "m-galstuk-nuqtali.png",
+      "thumb": "m-galstuk-nuqtali.thumb.png",
+      "anchor": {
+        "x": 299.0,
+        "y": 2.0
+      },
+      "neck": 152.0,
+      "source": "https://pngimg.com/d/suit_PNG93213.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-nuqtali.jacket.png",
+        "lref": 0.09916706383228302
+      }
+    },
+    {
+      "id": "m-galstuk-binafsha",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "To'q ko'k, binafsha galstuk",
+      "file": "m-galstuk-binafsha.png",
+      "thumb": "m-galstuk-binafsha.thumb.png",
+      "anchor": {
+        "x": 304.5,
+        "y": 2.0
+      },
+      "neck": 167.0,
+      "source": "https://pngimg.com/d/suit_PNG93214.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-binafsha.jacket.png",
+        "lref": 0.14988470077514648
+      }
+    },
+    {
+      "id": "m-galstuk-qizil",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "Kulrang, qizil galstuk",
+      "file": "m-galstuk-qizil.png",
+      "thumb": "m-galstuk-qizil.thumb.png",
+      "anchor": {
+        "x": 573.5,
+        "y": 6.0
+      },
+      "neck": 313.0,
+      "source": "https://pngimg.com/d/suit_PNG93212.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-qizil.jacket.png",
+        "lref": 0.21625253558158875
+      }
+    },
+    {
+      "id": "m-galstuk-yolli",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "Yo'l-yo'l kostyum",
+      "file": "m-galstuk-yolli.png",
+      "thumb": "m-galstuk-yolli.thumb.png",
+      "anchor": {
+        "x": 305.5,
+        "y": 7.0
+      },
+      "neck": 133.0,
+      "source": "https://pngimg.com/d/suit_PNG93220.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-yolli.jacket.png",
+        "lref": 0.11821333318948746
+      }
+    },
+    {
+      "id": "m-galstuk-yashil",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "To'q yashil",
+      "file": "m-galstuk-yashil.png",
+      "thumb": "m-galstuk-yashil.thumb.png",
+      "anchor": {
+        "x": 605.0,
+        "y": 7.0
+      },
+      "neck": 484.0,
+      "source": "https://pngimg.com/d/suit_PNG8137.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-yashil.jacket.png",
+        "lref": 0.1591576486825943
+      }
+    },
+    {
+      "id": "m-galstuk-qorakoylak",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "Qora ko'ylak bilan",
+      "file": "m-galstuk-qorakoylak.png",
+      "thumb": "m-galstuk-qorakoylak.thumb.png",
+      "anchor": {
+        "x": 301.5,
+        "y": 2.0
+      },
+      "neck": 173.0,
+      "source": "https://pngimg.com/d/suit_PNG93207.png"
+    },
+    {
+      "id": "m-galstuk-kok",
+      "types": [
+        "kostyum-galstuk"
+      ],
+      "name": "To'q kulrang, ko'k galstuk",
+      "file": "m-galstuk-kok.png",
+      "thumb": "m-galstuk-kok.thumb.png",
+      "anchor": {
+        "x": 280.0,
+        "y": 2.0
+      },
+      "neck": 128.0,
+      "source": "https://pngimg.com/d/suit_PNG93245.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-galstuk-kok.jacket.png",
+        "lref": 0.14201019704341888
+      }
+    },
+    {
+      "id": "kostyum-oq",
+      "types": [
+        "kostyum",
+        "jaket-koylak"
+      ],
+      "name": "Oq ko'ylak",
+      "file": "kostyum-oq.png",
+      "thumb": "kostyum-oq.thumb.png",
+      "anchor": {
+        "x": 417.5,
+        "y": 2.0
+      },
+      "neck": 239.0,
+      "source": "https://pngimg.com/d/suit_PNG8118.png",
+      "mask": {
+        "part": "jacket",
+        "file": "kostyum-oq.jacket.png",
+        "lref": 0.10588235408067703
+      }
+    },
+    {
+      "id": "m-smoking",
+      "types": [
+        "smoking"
+      ],
+      "name": "Qora smoking",
+      "file": "m-smoking.png",
+      "thumb": "m-smoking.thumb.png",
+      "anchor": {
+        "x": 397.0,
+        "y": 4.0
+      },
+      "neck": 136.0,
+      "source": "https://pngimg.com/d/suit_PNG8120.png",
+      "mask": {
+        "part": "jacket",
+        "file": "m-smoking.jacket.png",
+        "lref": 0.14844392240047455
+      }
+    },
+    {
+      "id": "m-koylak-galstuk-oq",
+      "types": [
+        "koylak-galstuk"
+      ],
+      "name": "Oq, katakli galstuk",
+      "file": "m-koylak-galstuk-oq.png",
+      "thumb": "m-koylak-galstuk-oq.thumb.png",
+      "anchor": {
+        "x": 392.5,
+        "y": 6.0
+      },
+      "neck": 185.0,
+      "source": "https://pngimg.com/d/dress_shirt_PNG8065.png",
+      "mask": {
+        "part": "shirt",
+        "file": "m-koylak-galstuk-oq.shirt.png",
+        "lref": 0.9354392886161804
+      }
+    },
+    {
+      "id": "m-koylak-galstuk-kumush",
+      "types": [
+        "koylak-galstuk"
+      ],
+      "name": "Oq, kumushrang galstuk",
+      "file": "m-koylak-galstuk-kumush.png",
+      "thumb": "m-koylak-galstuk-kumush.thumb.png",
+      "anchor": {
+        "x": 402.5,
+        "y": 8.0
+      },
+      "neck": 241.0,
+      "source": "https://pngimg.com/d/dress_shirt_PNG8067.png",
+      "mask": {
+        "part": "shirt",
+        "file": "m-koylak-galstuk-kumush.shirt.png",
+        "lref": 0.8407301902770996
+      }
+    },
+    {
+      "id": "m-koylak-galstuk-bej",
+      "types": [
+        "koylak-galstuk"
+      ],
+      "name": "Bej, to'q galstuk",
+      "file": "m-koylak-galstuk-bej.png",
+      "thumb": "m-koylak-galstuk-bej.thumb.png",
+      "anchor": {
+        "x": 401.0,
+        "y": 10.0
+      },
+      "neck": 166.0,
+      "source": "https://pngimg.com/d/dress_shirt_PNG8064.png",
+      "mask": {
+        "part": "shirt",
+        "file": "m-koylak-galstuk-bej.shirt.png",
+        "lref": 0.7677310109138489
+      }
+    },
+    {
+      "id": "m-koylak-havorang",
+      "types": [
+        "koylak"
+      ],
+      "name": "Havorang",
+      "file": "m-koylak-havorang.png",
+      "thumb": "m-koylak-havorang.thumb.png",
+      "anchor": {
+        "x": 389.5,
+        "y": 10.0
+      },
+      "neck": 185.0,
+      "source": "https://pngimg.com/d/dress_shirt_PNG8066.png",
+      "mask": {
+        "part": "shirt",
+        "file": "m-koylak-havorang.shirt.png",
+        "lref": 0.7627795934677124
+      }
+    }
+  ]
 }

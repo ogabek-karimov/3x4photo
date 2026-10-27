@@ -1,7 +1,7 @@
 import { loadImageBitmap, cutOut } from './segment.js';
 import { detectFace } from './face.js';
 import { measure, render, renderSheet, encode, PHOTO, PAPERS, DPI } from './compose.js';
-import { loadCatalog, importCloth, deleteCloth } from './clothes.js';
+import { loadCatalog, importCloth, deleteCloth, clothImage, PALETTES } from './clothes.js';
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
@@ -21,8 +21,9 @@ const state = {
   adjust: { ...DEFAULT_ADJUST },
   cloth: null,
   clothAdj: { scale: 1, x: 0, y: 0 },
-  catalog: { categories: [], items: [] },
+  catalog: { categories: [], types: [], items: [] },
   category: null,
+  pick: null,
   count: 1,
   paper: '10x15',
   format: 'jpg'
@@ -62,6 +63,7 @@ $$('.gender-card').forEach((card) =>
   card.addEventListener('click', async () => {
     state.gender = card.dataset.gender;
     state.cloth = null;
+    state.pick = null;
     show('upload');
     await refreshCatalog();
   })
@@ -263,19 +265,23 @@ $$('#swatches button').forEach((b) => {
 });
 $('#custom-color').addEventListener('input', (e) => setBg(e.target.value, $('.custom-color')));
 
-// ---------- Kiyimlar ----------
+// ---------- Kiyimlar: Bo'lim → Tur → Variant → Rang ----------
+// state.pick = { typeId, itemId, color } — tanlov; state.cloth — chizish uchun tayyor rasm
 async function refreshCatalog() {
   try {
     state.catalog = await loadCatalog(state.gender);
   } catch (err) {
     console.error(err);
-    state.catalog = { categories: [], items: [] };
+    state.catalog = { categories: [], types: [], items: [] };
   }
   if (!state.catalog.categories.some((c) => c.id === state.category)) {
     state.category = state.catalog.categories[0]?.id ?? null;
   }
+  $('#cloth-credits').textContent = state.catalog.credits || '';
   renderCatalog();
 }
+
+const typeItems = (typeId) => state.catalog.items.filter((i) => i.types.includes(typeId));
 
 function renderCatalog() {
   const cats = $('#cloth-cats');
@@ -291,62 +297,147 @@ function renderCatalog() {
     cats.append(b);
   }
 
-  const grid = $('#cloth-grid');
+  // Turlar
+  const grid = $('#cloth-types');
   grid.innerHTML = '';
-  const none = tile(null, 'Asl kiyim');
-  grid.append(none);
-  const items = state.catalog.items.filter((i) => i.category === state.category);
-  for (const it of items) grid.append(tile(it, it.name));
-  if (!items.length) {
+  grid.append(typeCard(null));
+  const types = state.catalog.types.filter((t) => t.category === state.category);
+  let shown = 0;
+  for (const t of types) {
+    if (!typeItems(t.id).length) continue;
+    grid.append(typeCard(t));
+    shown++;
+  }
+  if (!shown) {
     const e = document.createElement('div');
     e.className = 'empty';
     e.textContent =
       state.category === 'custom'
-        ? 'Hali kiyim qo\'shilmagan. Pastdagi tugma orqali shaffof fonli PNG kiyim rasmini qo\'shing.'
-        : 'Bu bo\'limda hozircha kiyim yo\'q.';
+        ? "Hali kiyim qo'shilmagan. Pastdagi tugma orqali shaffof fonli PNG kiyim rasmini qo'shing."
+        : "Bu bo'limda hozircha kiyim yo'q.";
     grid.append(e);
+  }
+  $('#cloth-import').classList.toggle('hidden', state.category !== 'custom');
+
+  // Variantlar va ranglar — tanlangan tur uchun
+  const pick = state.pick;
+  const type = pick && state.catalog.types.find((t) => t.id === pick.typeId);
+  const variants = type ? typeItems(type.id) : [];
+  const vwrap = $('#variants-wrap');
+  vwrap.classList.toggle('hidden', variants.length < 2);
+  const vrow = $('#cloth-variants');
+  vrow.innerHTML = '';
+  for (const it of variants) {
+    const b = document.createElement('button');
+    b.className = 'variant' + (it.id === pick.itemId ? ' active' : '');
+    b.title = it.name;
+    const img = document.createElement('img');
+    img.src = it.thumbSrc;
+    img.alt = it.name;
+    b.append(img);
+    b.onclick = () => choose(type.id, it.id, pick.color);
+    vrow.append(b);
+  }
+
+  const item = variants.find((i) => i.id === pick?.itemId);
+  const palette = type?.palette && item?.mask ? PALETTES[type.palette] : null;
+  $('#colors-wrap').classList.toggle('hidden', !palette);
+  const crow = $('#cloth-colors');
+  crow.innerHTML = '';
+  if (palette) {
+    const orig = document.createElement('button');
+    orig.className = 'orig' + (!pick.color ? ' active' : '');
+    orig.title = 'Asl rangi';
+    orig.onclick = () => choose(type.id, item.id, null);
+    crow.append(orig);
+    for (const p of palette) {
+      const b = document.createElement('button');
+      b.style.background = p.color;
+      b.title = p.name;
+      b.className = pick.color === p.color ? 'active' : '';
+      b.onclick = () => choose(type.id, item.id, p.color);
+      crow.append(b);
+    }
   }
   $('#cloth-fit').classList.toggle('hidden', !state.cloth);
 }
 
-function tile(item, label) {
+function typeCard(type) {
   const b = document.createElement('button');
-  b.className = 'cloth' + ((state.cloth?.id ?? null) === (item?.id ?? null) ? ' active' : '');
+  const active = (state.pick?.typeId ?? null) === (type?.id ?? null);
+  b.className = 'cloth' + (active ? ' active' : '');
   const thumb = document.createElement('div');
   thumb.className = 'thumb';
-  if (item) {
+  const label = document.createElement('span');
+  if (type) {
+    const items = typeItems(type.id);
+    const shownItem = (active && items.find((i) => i.id === state.pick.itemId)) || items[0];
     const img = document.createElement('img');
-    img.src = item.src;
-    img.alt = label;
+    img.src = shownItem.thumbSrc;
+    img.alt = type.name;
     thumb.append(img);
+    label.textContent = type.id === 'custom' ? shownItem.name : type.name;
+    if (items.length > 1) {
+      const count = document.createElement('i');
+      count.className = 'count';
+      count.textContent = items.length;
+      b.append(count);
+    }
+    if (type.id === 'custom' && active) {
+      const del = document.createElement('button');
+      del.className = 'del';
+      del.title = "O'chirish";
+      del.textContent = '×';
+      del.onclick = async (e) => {
+        e.stopPropagation();
+        await deleteCloth(state.pick.itemId);
+        state.pick = null;
+        state.cloth = null;
+        await refreshCatalog();
+        draw();
+      };
+      b.append(del);
+    }
+    b.onclick = () => {
+      if (active) return;
+      choose(type.id, items[0].id, null);
+    };
   } else {
     thumb.innerHTML = '<div class="none-icon">⦸</div>';
-  }
-  const span = document.createElement('span');
-  span.textContent = label;
-  b.append(thumb, span);
-  b.onclick = () => {
-    state.cloth = item;
-    state.clothAdj = { scale: 1, x: 0, y: 0 };
-    syncSliders();
-    renderCatalog();
-    draw();
-  };
-  if (item && !item.builtin) {
-    const del = document.createElement('button');
-    del.className = 'del';
-    del.title = 'O\'chirish';
-    del.textContent = '×';
-    del.onclick = async (e) => {
-      e.stopPropagation();
-      await deleteCloth(item.id);
-      if (state.cloth?.id === item.id) state.cloth = null;
-      await refreshCatalog();
+    label.textContent = 'Asl kiyim';
+    b.onclick = () => {
+      state.pick = null;
+      state.cloth = null;
+      renderCatalog();
       draw();
     };
-    b.append(del);
   }
+  b.append(thumb, label);
   return b;
+}
+
+let chooseSeq = 0;
+async function choose(typeId, itemId, color) {
+  const prevItem = state.pick?.itemId;
+  state.pick = { typeId, itemId, color };
+  if (prevItem !== itemId) {
+    state.clothAdj = { scale: 1, x: 0, y: 0 };
+    syncSliders();
+  }
+  renderCatalog();
+  const item = state.catalog.items.find((i) => i.id === itemId);
+  const seq = ++chooseSeq;
+  try {
+    const image = await clothImage(item, color);
+    if (seq !== chooseSeq) return;
+    state.cloth = { image, anchor: item.anchor, neck: item.neck };
+  } catch (err) {
+    console.error(err);
+    toast('Kiyimni yuklashda xatolik', { error: true });
+    state.cloth = null;
+  }
+  renderCatalog();
+  draw();
 }
 
 $('#cloth-input').addEventListener('change', async (e) => {
@@ -354,13 +445,11 @@ $('#cloth-input').addEventListener('change', async (e) => {
   e.target.value = '';
   if (!f) return;
   try {
-    const item = await importCloth(f, state.gender);
+    const record = await importCloth(f, state.gender);
     state.category = 'custom';
     await refreshCatalog();
-    state.cloth = state.catalog.items.find((i) => i.id === item.id) || null;
-    renderCatalog();
-    draw();
-    toast('Kiyim qo\'shildi');
+    await choose('custom', record.id, null);
+    toast("Kiyim qo'shildi");
   } catch (err) {
     toast('Xatolik: ' + err.message, { error: true });
   }

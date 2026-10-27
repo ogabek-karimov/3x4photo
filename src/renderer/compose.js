@@ -11,8 +11,10 @@ export const LAYOUTS = { 1: null, 4: { cols: 2, rows: 2 }, 6: { cols: 3, rows: 2
 
 const HEAD_RATIO = 0.62; // tepa (soch) dan iyakgacha — rasm balandligining ulushi
 const TOP_MARGIN = 0.07;
-const SHOULDER_PER_FACE = 2.75;
-const NECK_BELOW_CHIN = 0.22;
+// Kiyim joylash: shablondagi bo'yin ochig'i kengligi = yuz kengligi × NECK_PER_FACE,
+// yoqa tepasi iyakdan NECK_BELOW_CHIN × yuz kengligi pastda
+const NECK_PER_FACE = 0.9;
+const NECK_BELOW_CHIN = -0.02;
 
 // Yuz va siymo bo'yicha asosiy o'lchamlar (rasm piksellarida)
 export function measure(mask, face) {
@@ -68,7 +70,7 @@ export function render(ctx, W, H, s) {
 
   const c = s.cloth;
   if (c && c.image) {
-    const cs = (SHOULDER_PER_FACE * m.fw * s.clothAdj.scale) / c.shoulder;
+    const cs = (NECK_PER_FACE * m.fw * s.clothAdj.scale) / c.neck;
     const nx = m.cx + s.clothAdj.x * m.fw;
     const ny = m.chinY + (NECK_BELOW_CHIN + s.clothAdj.y) * m.fw;
     ctx.drawImage(c.image, nx - c.anchor.x * cs, ny - c.anchor.y * cs, c.image.width * cs, c.image.height * cs);

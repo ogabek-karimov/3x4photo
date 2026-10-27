@@ -109,17 +109,27 @@
 
           <div class="tab-body active" id="tab-clothes">
             <div class="chips" id="cloth-cats"></div>
-            <div class="cloth-grid" id="cloth-grid"></div>
-            <div class="cloth-fit" id="cloth-fit">
+            <h4>Turi</h4>
+            <div class="type-grid" id="cloth-types"></div>
+            <div id="variants-wrap" class="hidden">
+              <h4>Variant</h4>
+              <div class="variant-row" id="cloth-variants"></div>
+            </div>
+            <div id="colors-wrap" class="hidden">
+              <h4>Rang</h4>
+              <div class="swatches small" id="cloth-colors"></div>
+            </div>
+            <div class="cloth-fit hidden" id="cloth-fit">
               <h4>Kiyimni moslash</h4>
               <div class="field"><label>Kattalik</label><input type="range" id="c-scale" min="0.6" max="1.6" step="0.01" value="1" /></div>
               <div class="field"><label>Yuqori / past</label><input type="range" id="c-y" min="-0.8" max="0.8" step="0.005" value="0" /></div>
               <div class="field"><label>Chap / o'ng</label><input type="range" id="c-x" min="-0.5" max="0.5" step="0.005" value="0" /></div>
             </div>
-            <label class="btn outline block">
+            <label class="btn outline block hidden" id="cloth-import">
               <input type="file" id="cloth-input" accept="image/png" hidden />
               + O'z kiyimingizni qo'shish (shaffof PNG)
             </label>
+            <p class="credits" id="cloth-credits"></p>
           </div>
 
           <div class="tab-body" id="tab-background">
